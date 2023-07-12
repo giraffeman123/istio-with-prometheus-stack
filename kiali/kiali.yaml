@@ -1,0 +1,37 @@
+apiVersion: kiali.io/v1alpha1
+kind: Kiali
+metadata:
+  name: kiali
+  namespace: istio-system
+spec:
+  server:
+    web_fqdn: kiali.example.com
+    web_port: 443
+    web_root: /kiali
+    web_schema: https
+  deployment:
+    ingress:
+      #class_name: "nginx"
+      enabled: true
+      override_yaml:
+        metadata:
+          annotations: {}
+            #nginx.ingress.kubernetes.io/secure-backends: "true"
+            #nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        spec:
+          ingressClassName: nginx-default
+          tls:
+          - hosts:
+            - kiali.example.com
+            secretName: cert-tls
+          rules:
+          - host: kiali.example.com
+            http:
+              paths:
+              - backend:
+                  service:
+                    name: kiali
+                    port:
+                      number: 20001
+                path: /kiali
+                pathType: Prefix

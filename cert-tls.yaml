@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-tls
+  namespace: istio-system
+type: kubernetes.io/tls
+data:
+  tls.crt: "${tls.key | base64 }"
+  tls.key: "${tls.cert | base64 }"
